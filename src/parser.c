@@ -8,6 +8,7 @@ int main(int argc, char* argv[]) {
 
 	int preset_flag;
 	int form_flag;
+	int graph_flag;
 	static struct option longopts[] = {
 		{ NULL, 	required_argument, 	NULL, 		'a' },
 		{ NULL, 	required_argument, 	NULL, 		'b' },
@@ -17,48 +18,21 @@ int main(int argc, char* argv[]) {
 		{ "graph", 	no_argument, 		&graph_flag, 	'g' },
 		{ "help", 	no_argument, 		NULL, 		'h' }
 
-	}
+	};
+
 	int c;
-	while((c = getopt(argc, argv, "a:b:s:r")) != -1) {
+	while((c = getopt(argc, argv, "a:b:s:r", longopts, NULL)) != -1) {
 		switch(c)
 		{
-			case 'a':
-					if (optarg != NULL) {
-						mpz_init(argument.a);
-						mpz_set_str(argument.a, optarg, 10);
-					}
-					else {
-						fprintf(stderr, "Option '-a' requires an argument.\n");
-						return FAILURE;
-					}
-					break;
-			case 'b':
-					if (optarg != NULL) {
-						mpz_init(argument.b);
-						mpz_set_str(argument.b, optarg, 10);
-					}
-					else {
-						fprintf(stderr, "Option '-b' requires an argument.\n");
-						return FAILURE;
-					}
-					break;
-			case 's':
-					if (optarg != NULL) {
-							argument.s = strtoul(optarg, NULL, 10);
-					}
-					else {
-							fprintf(stderr, "Option '-s' requires an argument.\n");
-							return FAILURE;
-					}
-					break;
-			case 'r':
-					argument.r = 1;
-					break;
+			case 'h':
+				print_usage(stdout);
+				return SUCCESS;
+
 		}
 	}
 
-	if(optind == 1) {
-		fprintf(stderr, 
+void print_usage(FILE stream) { 
+	fprintf(stream,
 "usage: ./ecc <-a integer_constant> <-b integer_constant> <-s key_size> [-p presets] [-f file] [-g] [-h]\n"
 "\n"
 "  Generates elliptic curves for educational and cryptographical purposes. Performs elliptic curve arithemtic.\n"
@@ -77,7 +51,5 @@ int main(int argc, char* argv[]) {
 		);
 	}
 
-	gmp_printf("%Zd\n%Zd\n", argument.a, argument.b);
-	printf("%d\n%d\n", argument.s, argument.r);
 	return 0;
 }
