@@ -7,7 +7,7 @@
 
 void print_usage(FILE* stream) { 
 	fprintf(stream,
-"usage: ./ecc <-a integer_constant> <-b integer_constant> <-s key_size> [-p presets] [-f file] [-g] [-h]\n"
+"usage: ./ecc [-a integer_constant] [-b integer_constant] <-s key_size> [-p presets] [-f file] [-g] [-h]\n"
 "\n"
 "  Generates elliptic curves for educational and cryptographical purposes. Performs elliptic curve arithemtic.\n"
 "\n"
@@ -31,8 +31,8 @@ int main(int argc, char* argv[]) {
 	int graph_flag;
 	int option_index = 0;
 	static struct option longopts[] = {
-		{ "a", 		required_argument, 	0, 	0	 },
-		{ "b",  	required_argument, 	0, 	0	 },
+		{ "a", 		optional_argument, 	0, 	0	 },
+		{ "b",  	optional_argument, 	0, 	0	 },
 		{ "size", 	required_argument, 	0, 	0	 },
 		{ "preset", 	required_argument, 	0, 	0	 },
 		{ "form", 	required_argument, 	0, 	0	 },
