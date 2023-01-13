@@ -3,35 +3,9 @@
 #include <getopt.h>
 #include <gmp.h>
 #include "status.h"
+#include "parser.h"
 
-int main(int argc, char* argv[]) {
-
-	int preset_flag;
-	int form_flag;
-	int graph_flag;
-	static struct option longopts[] = {
-		{ NULL, 	required_argument, 	NULL, 		'a' },
-		{ NULL, 	required_argument, 	NULL, 		'b' },
-		{ "size", 	required_argument, 	NULL, 		's' },
-		{ "preset", 	required_argument, 	&preset_flag, 	'p' },
-		{ "form", 	required_argument, 	&form_flag, 	'f' },
-		{ "graph", 	no_argument, 		&graph_flag, 	'g' },
-		{ "help", 	no_argument, 		NULL, 		'h' }
-
-	};
-
-	int c;
-	while((c = getopt(argc, argv, "a:b:s:r", longopts, NULL)) != -1) {
-		switch(c)
-		{
-			case 'h':
-				print_usage(stdout);
-				return SUCCESS;
-
-		}
-	}
-
-void print_usage(FILE stream) { 
+void print_usage(FILE* stream) { 
 	fprintf(stream,
 "usage: ./ecc <-a integer_constant> <-b integer_constant> <-s key_size> [-p presets] [-f file] [-g] [-h]\n"
 "\n"
@@ -50,6 +24,36 @@ void print_usage(FILE stream) {
 
 		);
 	}
+int main(int argc, char* argv[]) {
 
+	int preset_flag;
+	int form_flag;
+	int graph_flag;
+	int option_index = 0;
+	static struct option longopts[] = {
+		{ "a", 		required_argument, 	0, 	0	 },
+		{ "b",  	required_argument, 	0, 	0	 },
+		{ "size", 	required_argument, 	0, 	0	 },
+		{ "preset", 	required_argument, 	0, 	0	 },
+		{ "form", 	required_argument, 	0, 	0	 },
+		{ "graph", 	no_argument, 		0, 	0	 },
+		{ "help", 	no_argument, 		0, 	'h'	 },
+		{ NULL,         0,       		NULL,  	0 	 }
+	};
+
+	int c;
+	while ((c = getopt_long(argc, argv, "h", longopts, NULL)) != -1)
+		switch(c) {
+			case 'h':
+				print_usage(stdout);
+				return -1;
+				break;
+			case '?':
+				break;
+			default:
+				printf("unknown argument\n");
+				print_usage(stderr);
+				return -1;
+		}
 	return 0;
 }
