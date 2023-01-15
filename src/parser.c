@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
 #include <getopt.h>
 #include <gmp.h>
 #include "status.h"
@@ -7,53 +8,69 @@
 
 void print_usage(FILE* stream) { 
 	fprintf(stream,
-"usage: ./ecc [-a integer_constant] [-b integer_constant] <-s key_size> [-p presets] [-f file] [-g] [-h]\n"
+"usage: ./ecc [-ghr] [-s key_size] [-p presets] [-i file]\n"
 "\n"
 "  Generates elliptic curves for educational and cryptographical purposes. Performs elliptic curve arithemtic.\n"
 "\n"
 "  options:\n"
-"   -a			select the 'a' constant in an EC curve.\n"
-"   -b			select the 'b' constant in an EC curve.\n"
-"   -s, --size		bit size for the key (recommended: 256)\n"
-"   -p, --preset=PRESET choose a preconfigured curve\n"
+"   -r, --random	randomly generate parameters for a curve\n"
+"   -s, --size		bit size for the key (min: 16, max: 512)\n"
+"   -p, --preset choose a preconfigured curve\n"
 "			   (options: \"brainpool256\", \"curve25519\", \"nist256\", \"secp256k1\")\n"
-"   -f, --form=FORM	specify a different equation form (default: shortw)\n"
-"			   (options: \"shortw\", \"longw\", \"edward\", \"montgomery\", \"hessian\")\n"
+"   -i, --input		reads curve configurations from a specified file\n"
 "   -g, --graph		graph a plot of the curve\n"
 "   -h, --help		display this message\n"
+"\n"
+"examples:\n"
+"   ./ecc -i mycurve.txt -g\n"
+"   ./ecc --random --size=255 -g\n"
+"   ./ecc -p curve25519\n"
 
 		);
 	}
 int main(int argc, char* argv[]) {
 
-	int preset_flag;
-	int form_flag;
-	int graph_flag;
-	int option_index = 0;
-	static struct option longopts[] = {
-		{ "a", 		optional_argument, 	0, 	0	 },
-		{ "b",  	optional_argument, 	0, 	0	 },
-		{ "size", 	required_argument, 	0, 	0	 },
-		{ "preset", 	required_argument, 	0, 	0	 },
-		{ "form", 	required_argument, 	0, 	0	 },
-		{ "graph", 	no_argument, 		0, 	0	 },
-		{ "help", 	no_argument, 		0, 	'h'	 },
-		{ NULL,         0,       		NULL,  	0 	 }
+	enum FLAG_VAL
+	{
+		UNSET    = -1,
+		NEGATIVE = 0, 
+		POSITIVE = 1
 	};
+	int input_flag  = UNSET;
+	int preset_flag = UNSET;
+	int graph_flag  = UNSET;
 
+	static struct option longopts[] = {
+		{ "input",	required_argument,	0,	'i' },
+		{ "size", 	required_argument, 	0, 	's' },
+		{ "preset", 	required_argument, 	0, 	'p' },
+		{ "random",	no_argument,		0,	'r'
+		{ "graph", 	no_argument, 		0, 	'g' },
+		{ "help", 	no_argument, 		0, 	'h' },
+		{ NULL,         0,       		NULL,  	 0  }
+	};
+		
+	if (argc == 1) {
+		print_usage(stderr);
+		exit(EXIT_FAILURE);
+	}
 	int c;
-	while ((c = getopt_long(argc, argv, "h", longopts, NULL)) != -1)
+	while ((c = getopt_long(argc, argv, "hgi:s:p:", longopts, NULL)) != -1) {
 		switch(c) {
 			case 'h':
 				print_usage(stdout);
+				printf("%d\n", input_flag);
 				return -1;
+			case 'i':
+				input_flag = POSITIVE;
 				break;
-			case '?':
+			case 's':
+				if (input_flag) { printf("input mode set\tskipping..."); }
 				break;
 			default:
-				printf("unknown argument\n");
 				print_usage(stderr);
 				return -1;
 		}
+	}
 	return 0;
 }
