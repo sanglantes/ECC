@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <gmp.h>
 #include "curves.h"
+
 // ************************************************************************
 // *									  *
 // *                            NOTES ON curves.c                         *
