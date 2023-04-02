@@ -13,7 +13,6 @@ void print_usage(FILE* stream) {
 "  Generates elliptic curves for educational and cryptographical purposes. Performs elliptic curve arithemtic.\n"
 "\n"
 "  options:\n"
-"   -r, --random	randomly generate parameters for a curve\n"
 "   -s, --size		bit size for the key (min: 16, max: 512)\n"
 "   -p, --preset choose a preconfigured curve\n"
 "			   (options: \"brainpool256\", \"curve25519\", \"nist256\", \"secp256k1\")\n"
@@ -23,7 +22,6 @@ void print_usage(FILE* stream) {
 "\n"
 "examples:\n"
 "   ./ecc -i mycurve.txt -g\n"
-"   ./ecc --random --size=255 -g\n"
 "   ./ecc -p curve25519\n"
 
 		);
@@ -32,8 +30,7 @@ int main(int argc, char* argv[]) {
 
 	enum FLAG_VAL
 	{
-		UNSET    = -1,
-		NEGATIVE = 0, 
+		UNSET    = 0,
 		POSITIVE = 1
 	};
 	int input_flag  = UNSET;
