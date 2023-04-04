@@ -1,4 +1,5 @@
 #include <gmp.h>
+#include "point.h"
 #include "curves.h"
 #include "arithmetic.h"
 

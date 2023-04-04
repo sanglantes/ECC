@@ -7,14 +7,6 @@ typedef enum {
 	EDWARD = 2
 } form_t;
 
-typedef struct Point {
-	mpz_t x;
-	mpz_t y;
-} point_t;
-
-void point_init(point_t point);
-point_t set_point(char* x_char, char* y_char);
-
 typedef struct Curve {
 	mpz_t   p;
 	mpz_t   a;

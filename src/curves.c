@@ -1,54 +1,34 @@
 #include <stdio.h>
 #include <gmp.h>
+#include "point.h"
 #include "curves.h"
 
-// ************************************************************************
-// *									  *
-// *                            NOTES ON curves.c                         *
-// *									  *
-// * This module contains the blueprint for a variety of elliptic curves. *
-// * As of now, no binary curves exist. 				  *
-// * All integer values are represented in base 16. 			  *
-// * 									  *
-// ************************************************************************
+/*
+ *
+ **************************************************************************
+ *									  *
+ *                            NOTES ON curves.c                           *
+ *									  *
+ * This module contains the blueprint for a variety of elliptic curves.   *
+ * As of now, no binary curves exist. 				          *
+ * All integer values are represented in base 16. 			  *
+ * 									  *
+ **************************************************************************
 
-// TODO: set_point() is better suited in arithmetic section.
+ ***********************************************************************************************
+ *											       *
+ * Name:   Curve25519									       *
+ * Author: Daniel Bernstein								       *
+ * Form:   Montgomery									       *
+ * Parameters: 									       	       *
+ *	p = 2^255 - 19									       *
+ *	A = 0x76d06									       *
+ *	B = 0x1										       *
+ *	Base point = (0x9, 0x20ae19a1b8a086b4e01edd2c7748d14c923d4d7e6d7c61b229e9c5a27eced3d9) *
+ *											       *
+ ***********************************************************************************************
 
-void point_init(point_t point) {
-	mpz_inits(point.x, point.y, NULL);
-}
-
-point_t set_point(char* x_char, char* y_char) {
-	
-	point_t rop = {
-		.x = {},
-		.y = {},
-	};
-
-	mpz_t x, y;
-	mpz_inits(x, y, NULL);
-
-	mpz_set_str(x, x_char, 16);
-	mpz_set_str(y, y_char, 16);
-
-	mpz_set(rop.x, x);
-	mpz_set(rop.y, y);
-
-	return rop;
-}
-
-// *********************************************************************************************
-// *											       *
-// * Name:   Curve25519									       *
-// * Author: Daniel Bernstein								       *
-// * Form:   Montgomery									       *
-// * Parameters: 									       *
-// *	p = 2^255 - 19									       *
-// *	A = 0x76d06									       *
-// *	B = 0x1										       *
-// *	Base point = (0x9, 0x20ae19a1b8a086b4e01edd2c7748d14c923d4d7e6d7c61b229e9c5a27eced3d9) *
-// *											       *
-// *********************************************************************************************
+ */
 
 curve_t create_curve25519() {
 
@@ -70,21 +50,23 @@ curve_t create_curve25519() {
 
 	return curve25519;
 }
-
-// ****************************************************************************************
-// *											  *
-// * Name:   P-256									  *
-// * Author: NIST									  *
-// * Form:   Short Weierstrass								  *
-// * Parameters:									  *
-// *	p = 0xffffffff00000001000000000000000000000000ffffffffffffffffffffffff		  *
-// *	A = 0xffffffff00000001000000000000000000000000fffffffffffffffffffffffc		  *
-// * 	B = 0x5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b		  *
-// *	Base point = ("6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296", *
-// *                  "4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5") *
-// * Additional notes: Not safe when used with DUAL_EC_DRBG			          *
-// *											  *
-// ****************************************************************************************
+/*
+ ******************************************************************************************
+ *											  *
+ * Name:   P-256									  *
+ * Author: NIST									  	  *
+ * Form:   Short Weierstrass								  *
+ * Parameters:									  	  *
+ *	p = 0xffffffff00000001000000000000000000000000ffffffffffffffffffffffff		  *
+ *	A = 0xffffffff00000001000000000000000000000000fffffffffffffffffffffffc		  *
+ * 	B = 0x5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b		  *
+ *	Base point = ("6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296", *
+ *                  "4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5")   *
+ * Additional notes: Not safe when used with DUAL_EC_DRBG			          *
+ *											  *
+ ******************************************************************************************
+*/
+ 
 curve_t create_p256() {
 	curve_t p256 = {
 			.p = {},
