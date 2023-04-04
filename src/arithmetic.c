@@ -69,7 +69,7 @@ point_t montgomery_transformation(curve_t curve, point_t P, point_t Q) {
 	// E : v^2 = u^3 + (B^2(1 - A^2/3))u + B^3 * A/3(2A^2/9 - 1)
 	// Note that not all Weierstrass curves are capable of isomorphic birational mappings 
 	// onto a Montgomery curve. To validate the transformation, it is possible to ensure that
-	// the discriminant: 4A^3 + 27B^2 doesn't divide with the field order p.
+	// the discriminant: 4A^3 + 27B^2 isn't zero.
 	//
 	// Birational mapping is not necessary for twisted Edward curves since their
 	// arithmetic isn't inconveniently slow.
