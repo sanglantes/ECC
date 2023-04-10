@@ -87,16 +87,3 @@ curve_t create_p256() {
 
 	return p256;
 }
-
-void debug_curve(curve_t curve) {
-
-	gmp_printf("p: %Zd\na: %Zd\nb: %Zd\ngenerator: (%Zd, %Zd)\n", curve.p, curve.a, curve.b, curve.generator.x, curve.generator.y);
-}
-
-int main() {
-    curve_t curve25519 = create_p256();
-    debug_curve(curve25519);
-
-    mpz_clears(curve25519.p, curve25519.a, curve25519.b, curve25519.generator, NULL);
-    return 0;
-}

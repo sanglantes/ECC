@@ -7,10 +7,10 @@ void point_init(point_t point) {
 
 point_t set_point(char* x_char, char* y_char) {
 
-        point_t rop = {
-                .x = {},
-                .y = {},
-        };
+	point_t rop = {
+		.x = {},
+		.y = {},
+	};
 
         mpz_t x, y;
         mpz_inits(x, y, NULL);
