@@ -36,10 +36,10 @@ point_t weierstrass_addition(curve_t curve, point_t P, point_t Q) {
 	mpz_sub(slope, slope, P.x);	      // P_x - Q_x
 	mpz_sub(R_x, slope, Q.x);	      // s_i1 - P_x - Q_x
 	mpz_mod(R_x, R_x, curve.p);	      // s_i2 mod p
-	gmp_printf("slope: %Zd\nDx: %Zd\nRx: %Zd\n", slope, delta_x, R_x);
 
 	// R_y = (P_y) + s * (P_x - Q_x) mod p
 	weierstrass_slope(slope, P, Q, curve.p); // s_i
+	mpz_sub(delta_x, P.x, R_x);
 	mpz_mul(slope, slope, delta_x);       // s_i * (P_x - Q_x)
 	mpz_sub(slope, slope, P.y);	      // s_i1 - P_y
 	mpz_mod(R_y, slope, curve.p);	      // s_i2 mod p
@@ -115,8 +115,8 @@ int main() {
 	mpz_t rop;
 	mpz_inits(rop, debug_curve.p, debug_curve.a, debug_curve.b, NULL);
 	point_t P, Q; point_init(P); point_init(Q);
-	P = set_point("A", "6");
-	Q = set_point("6", "3");
+	P = set_point("7", "6");
+	Q = set_point("5", "10");
 	mpz_set_ui(debug_curve.p, 17);
 	mpz_set_ui(debug_curve.a, 2);
 	mpz_set_ui(debug_curve.b, 2);
