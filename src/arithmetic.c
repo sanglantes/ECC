@@ -32,10 +32,11 @@ point_t weierstrass_addition(curve_t curve, point_t P, point_t Q) {
 
 	// R_x = (s^2 - x_P - x_Q) mod p
 	weierstrass_slope(slope, P, Q, curve.p); // s_i
-	mpz_pow_ui(slope, slope, 2);	      // s_i1 ^ 2
-	mpz_sub(delta_x, P.x, Q.x);	      // P_x - Q_x
-	mpz_sub(R_x, slope, delta_x);	      // s_i1 - P_x - Q_x
+	mpz_pow_ui(slope, slope, 2);
+	mpz_sub(slope, slope, P.x);	      // P_x - Q_x
+	mpz_sub(R_x, slope, Q.x);	      // s_i1 - P_x - Q_x
 	mpz_mod(R_x, R_x, curve.p);	      // s_i2 mod p
+	gmp_printf("slope: %Zd\nDx: %Zd\nRx: %Zd\n", slope, delta_x, R_x);
 
 	// R_y = (P_y) + s * (P_x - Q_x) mod p
 	weierstrass_slope(slope, P, Q, curve.p); // s_i
@@ -84,7 +85,7 @@ point_t weierstrass_addition(curve_t curve, point_t P, point_t Q) {
 //	mpz_sub(buf, buf, P.y);
 //	mpz_mod(y_r, buf, curve.p);
 //
-//	mpz_clears(lambda, delta, buf, scnd_buf);
+//	mpz_clears(lambda, delta, buf, scnd_buf, NULL);
 //	point_t doubled_point;
 //	mpz_set(doubled_point.x, x_r);
 //	mpz_set(doubled_point.y, y_r);
