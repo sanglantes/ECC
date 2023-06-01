@@ -6,10 +6,15 @@
 #include "curves.h"
 #include "arithmetic.h"
 #include <stdint.h>
+
 #define INFTY 0
 
 uint32_t ts_alg(mpz_t rop, mpz_t r, mpz_t n, mpz_t p) { // Tonelli-Shanks algorithm for solving modular square roots.
 	// Find Q and S such that p - 1 = Q * 2^S
+	mpz_mod_ui(rop, p, 4);
+	if (mpz_legendre(n, p) == -1) {
+		return -1;	
+	}
 	mpz_t Q, buf;
 	mpz_init(Q);
 	mpz_sub_ui(Q, p, 1);
@@ -28,7 +33,8 @@ uint32_t ts_alg(mpz_t rop, mpz_t r, mpz_t n, mpz_t p) { // Tonelli-Shanks algori
 	while (mpz_jacobi(z, p) != -1) {
 		mpz_add_ui(z, z, 1);
 	}
-	
+	gmp_printf("z: %Zd, Q: %Zd, S: ", z, Q);
+
 	// M <- S
 	mpz_t M;
 	mpz_init(M);
@@ -51,15 +57,19 @@ uint32_t ts_alg(mpz_t rop, mpz_t r, mpz_t n, mpz_t p) { // Tonelli-Shanks algori
 	mpz_add_ui(q_exp, Q, 1);
 	mpz_cdiv_q_ui(q_exp, q_exp, 2);
 	mpz_powm(R, n, q_exp, p);
+
+	//gmp_printf("M: %Zd\nc: %Zd\nt: %Zd\nR: %Zd\n", M, c, t, R);
 	
 	// Loop
-	mpz_t b, i, two, c_exp;
-	mpz_inits(b, i, two, c_exp, NULL);
+	mpz_t b, temp_b_exp, temp_t, i, two, c_exp;
+	mpz_inits(b, temp_b_exp, temp_t, i, two, c_exp, NULL);
 	mpz_set_ui(two, 2);
 	mpz_set_ui(i, 1);
 
+	uint32_t counter = 0;
+
 	while (1) {
-		if (mpz_cmp_ui(t, 0) == 0) {
+		if (mpz_cmp_d(t, 0) == 0) {
 			mpz_set_ui(rop, 0);
 			return 0;
 		}
@@ -69,10 +79,21 @@ uint32_t ts_alg(mpz_t rop, mpz_t r, mpz_t n, mpz_t p) { // Tonelli-Shanks algori
 		} 
 
 		// Find the least i < i < M => t^2^i = 1
-		mpz_sub(M, M, i);
-		mpz_sub_ui(M, M, 1);
-		mpz_powm(c_exp, two, M, p);
 
+		mpz_powm(temp_t, two, i, p);
+
+		while (mpz_cmp_ui(temp_t, 1 != 0)) {
+			mpz_add_ui(i, i, 1);	
+			mpz_powm(temp_t, two, i, p);
+		}
+		//DEBUG: Find i: clear.
+		//Set b
+		mpz_sub(temp_b_exp, M, i);
+		mpz_sub_ui(temp_b_exp, temp_b_exp, 1);
+		mpz_powm(temp_b_exp, two, temp_b_exp, p);
+		mpz_powm(b, c, temp_b_exp, p);
+		gmp_printf("%Zd\n", b);
+		
 		// M <- i
 		mpz_set(M, i);
 
@@ -197,14 +218,12 @@ int main() {
 
 	mpz_t rop, re, ne, pe; 
 	mpz_inits(rop, re, ne, pe, NULL);
-	mpz_set_ui(ne, 9);
-	mpz_set_ui(pe, 17);
+	mpz_set_ui(ne, 558);
+	mpz_set_ui(pe, 3257);
 
-	// x^2 = 9 (mod 17)
-	// x = 3
 	ts_alg(rop, re, ne, pe);
 
-	gmp_printf("%Zd\n", rop);
+	gmp_printf("Received output: %Zd\n", rop);
 
 	return 0;
 }
